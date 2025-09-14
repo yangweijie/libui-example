@@ -1,0 +1,66 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "6ea606e7191cdc57d86157c09c9df82c",
+    "packages": [
+        {
+            "name": "kingbes/libui",
+            "version": "v0.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/KingBes/php-libui.git",
+                "reference": "1dc50513c7fc44eaea00ebc87df21e2851348aa3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/KingBes/php-libui/zipball/1dc50513c7fc44eaea00ebc87df21e2851348aa3",
+                "reference": "1dc50513c7fc44eaea00ebc87df21e2851348aa3",
+                "shasum": ""
+            },
+            "require": {
+                "ext-ffi": "*",
+                "php": ">=8.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Kingbes\\Libui\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "kingbes",
+                    "email": "1164601554@qq.com"
+                }
+            ],
+            "description": "PHP-FFI 绑定 libui，实现跨平台 GUI 编程。",
+            "keywords": [
+                "ffi",
+                "gui",
+                "libui",
+                "php"
+            ],
+            "support": {
+                "issues": "https://github.com/KingBes/php-libui/issues",
+                "source": "https://github.com/KingBes/php-libui/tree/v0.0.4"
+            },
+            "time": "2025-09-13T09:58:36+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {},
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {},
+    "platform-dev": {},
+    "plugin-api-version": "2.6.0"
+}

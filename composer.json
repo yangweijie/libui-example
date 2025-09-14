@@ -1,0 +1,26 @@
+{
+    "name": "yangweijie/libphp",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Yangweijie\\Libphp\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "jay",
+            "email": "917647288@qq.com"
+        }
+    ],
+    "scripts": {
+        "post-install-cmd": [
+            "@php scripts/check-libui-dylib.php"
+        ],
+        "post-update-cmd": [
+            "@php scripts/check-libui-dylib.php"
+        ]
+    },
+    "require": {
+        "kingbes/libui": "*"
+    }
+}
