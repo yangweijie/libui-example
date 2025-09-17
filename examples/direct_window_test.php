@@ -20,7 +20,7 @@ $fileMenu->addItem("新建", function ($item) {
     echo "新建文件\n";
 })->addItem("打开", function ($item) {
     echo "打开文件\n";
-})->addSeparator()->addQuitItem();
+})->addQuitItem();
 
 $editMenu = new Menu("编辑");
 $editMenu->addItem("撤销", function ($item) {
