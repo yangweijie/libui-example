@@ -13,7 +13,7 @@ $app = new Application();
 $app->init();
 
 // 创建主窗口
-$window = $app->createWindow("消息框示例", 400, 300);
+$window = $app->createWindow("消息框示例", 400, 100);
 
 // 创建主容器
 $mainBox = Box::newVerticalBox();
@@ -33,12 +33,13 @@ Button::onClicked($showErrorBtn, function ($btn) use ($window) {
 $showCustomMsgBtn = Button::create("显示自定义消息框");
 Button::onClicked($showCustomMsgBtn, function ($btn) use ($window) {
     // 创建自定义消息框
-    $msgBox = new MessageBox("自定义消息框", "这是一个自定义消息框示例！", 300, 200);
+    $msgBox = new MessageBox("自定义消息框", "这是一个自定义消息框示例！", 300, 90);
     $msgBox->addButton("确定", function ($btn) {
         echo "确定按钮被点击\n";
-    })->addButton("取消", function ($btn) {
+    },true)->addButton("取消", function ($btn) {
         echo "取消按钮被点击\n";
-    });
+        return false;
+    }, true);
     $msgBox->show();
 });
 
