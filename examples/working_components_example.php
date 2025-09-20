@@ -70,16 +70,25 @@ Group::setMargined($group, true);
 $grid = Grid::create();
 Grid::setPadded($grid, true);
 
-// 在Grid中添加控件
-$labelInGrid1 = Label::create("网格标签1");
-$labelInGrid2 = Label::create("网格标签2");
-$buttonInGrid1 = Button::create("网格按钮1");
-$buttonInGrid2 = Button::create("网格按钮2");
 
-Grid::append($grid, $labelInGrid1, 0, 0, 1, 1, 1, 0, 1, Align::Fill);
-Grid::append($grid, $labelInGrid2, 1, 0, 1, 1, 1, 0, 1, Align::Fill);
-Grid::append($grid, $buttonInGrid1, 0, 1, 1, 1, 1, 0, 1, Align::Fill);
-Grid::append($grid, $buttonInGrid2, 1, 1, 1, 1, 1, 0, 1, Align::Fill);
+//$grid = Grid::create();
+// 网格布局设置边框
+Grid::setPadded($grid, true);
+// 网格布局添加控件
+Grid::append($grid, Button::create("按钮"), 0, 0, 1, 1, 0, 0, 0, Align::Center);
+Grid::append($grid, Button::create("按钮"), 1, 0, 1, 1, 0, 0, 0, Align::End);
+
+
+// 在Grid中添加控件
+//$labelInGrid1 = Label::create("网格标签1");
+//$labelInGrid2 = Label::create("网格标签2");
+//$buttonInGrid1 = Button::create("网格按钮1");
+//$buttonInGrid2 = Button::create("网格按钮2");
+//
+//Grid::append($grid, $labelInGrid1, 0, 0, 1, 1, 1, 0, 1, Align::Fill);
+//Grid::append($grid, $labelInGrid2, 1, 0, 1, 1, 1, 0, 1, Align::Fill);
+//Grid::append($grid, $buttonInGrid1, 0, 1, 1, 1, 1, 0, 1, Align::Fill);
+//Grid::append($grid, $buttonInGrid2, 1, 1, 1, 1, 1, 0, 1, Align::Fill);
 
 // 将Grid添加到Group
 Group::setChild($group, $grid);
