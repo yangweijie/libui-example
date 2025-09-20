@@ -34,9 +34,9 @@ $showCustomMsgBtn = Button::create("显示自定义消息框");
 Button::onClicked($showCustomMsgBtn, function ($btn) use ($window) {
     // 创建自定义消息框
     $msgBox = new MessageBox("自定义消息框", "这是一个自定义消息框示例！", 300, 90);
-    $msgBox->addButton("确定", function ($btn) {
+    $msgBox->addButton("✅", function ($btn) {
         echo "确定按钮被点击\n";
-    },true)->addButton("取消", function ($btn) {
+    }, true)->addButton("❌", function ($btn) {
         echo "取消按钮被点击\n";
         return false;
     }, true);
