@@ -6,7 +6,7 @@ use Kingbes\Libui\App;
 use Kingbes\Libui\Window;
 use Kingbes\Libui\Control;
 use Kingbes\Libui\Draw;
-use Kingbes\Libui\Area;
+use Yangweijie\Libphp\Components\Area;
 use Kingbes\Libui\DrawBrushType;
 use Kingbes\Libui\DrawFillMode;
 
@@ -25,26 +25,52 @@ Window::onClosing($window, function ($window) {
     return 1;
 });
 
-// 创建绘画处理程序
-$areaHandler = Area::handler(function ($handler) {
+// 创建绘画区域
+$areaWrapper = new Area();
+$areaWrapper->onDraw(function ($drawParams) {
     // 创建红色笔刷
     $redBrush = Draw::createBrush(DrawBrushType::Solid, 1.0, 0.0, 0.0, 1.0);
     // 创建方块路径
     $drawPath = Draw::createPath(DrawFillMode::Winding);
-    // 绘制一个红色的方块
     Draw::pathAddRectangle($drawPath, 100, 100, 200, 200);
-    // 结束路径定义
     Draw::pathEnd($drawPath);
-    // 区域绘画参数
-    $drawParams = Area::createDrawParams();
+
+    // 绘制文本 (disabled: pending str2CData implementation)
+    $fontDesc = Draw::createFontDescriptor();
+    Draw::setFontFamily($fontDesc, 'Segoe UI Emoji');
+    Draw::setFontSize($fontDesc, 24);
+    // $textParams = Draw::createTextLayoutParams();
+    // Draw::setTextLayoutParamsDefaultFont($textParams, $fontDesc);
+    // Draw::setTextLayoutParamsWidth($textParams, 400);
+    // Draw::setTextLayoutParamsString($textParams, '✅ File written successfully! (5');
+    // $textLayout = Draw::createTextLayout($textParams);
+    // Draw::text($drawParams, $textLayout, 150, 350);
+    // Text rendering disabled due to layout stub
+    /*
+    $fontDesc = Draw::createFontDescriptor();
+    Draw::setFontFamily($fontDesc, 'Segoe UI Emoji');
+    Draw::setFontSize($fontDesc, 24);
+    $textParams = Draw::createTextLayoutParams();
+    Draw::setTextLayoutParamsDefaultFont($textParams, $fontDesc);
+    Draw::setTextLayoutParamsWidth($textParams, 400);
+    Draw::setTextLayoutParamsString($textParams, '✅ File written successfully! (5');
+    $textLayout = Draw::createTextLayout($textParams);
+    Draw::text($drawParams, $textLayout, 150, 350);
+    */
+    Draw::setFontFamily($fontDesc, 'Segoe UI Emoji');
+    Draw::setFontSize($fontDesc, 24);
+    $textParams = Draw::createTextLayoutParams();
+    Draw::setTextLayoutParamsDefaultFont($textParams, $fontDesc);
+    Draw::setTextLayoutParamsWidth($textParams, 400);
+    Draw::setTextLayoutParamsString($textParams, '✅ File written successfully! (5');
+    $textLayout = Draw::createTextLayout($textParams);
+    Draw::text($drawParams, $textLayout, 150, 350);
+
     // 填充方块
     Draw::fill($drawParams, $drawPath, $redBrush);
 });
 
-// 创建绘画区域
-$area = Area::create($areaHandler);
-
-Window::setChild($window, $area);
+Window::setChild($window, $areaWrapper->getControl());
 
 // 显示控件
 Control::show($window);
