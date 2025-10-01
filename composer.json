@@ -3,7 +3,8 @@
     "type": "library",
     "autoload": {
         "psr-4": {
-            "Yangweijie\\Libphp\\": "src/"
+            "Yangweijie\\Libphp\\": "src/",
+            "LibUI\\Components\\": "src/Components/"
         }
     },
     "authors": [
@@ -21,6 +22,7 @@
         ]
     },
     "require": {
-        "kingbes/libui": "*"
+        "kingbes/libui": "*",
+        "kingbes/raylib": "^0.0.5"
     }
 }
