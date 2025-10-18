@@ -167,18 +167,6 @@ class WindowWrapper
         return $this;
     }
 
-    public function onClosing(callable $callback){
-        // 窗口关闭事件
-        Window::onClosing($this->window, function ($window) use($callback){
-            if($callback($window)){
-                App::quit();
-                return 1;
-            }else{
-                return 0;
-            }
-        });
-    }
-
     /**
      * 显示消息框
      *

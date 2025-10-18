@@ -2,12 +2,12 @@
 
 namespace Yangweijie\Libphp\Components;
 
-use Kingbes\Libui\Window;
+use FFI\CData;
 use Kingbes\Libui\Box;
-use Kingbes\Libui\Label;
 use Kingbes\Libui\Button;
 use Kingbes\Libui\Control;
-use \FFI\CData;
+use Kingbes\Libui\Label;
+use Kingbes\Libui\Window;
 
 /**
  * 消息框组件

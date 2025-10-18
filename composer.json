@@ -4,6 +4,7 @@
     "autoload": {
         "psr-4": {
             "Yangweijie\\Libphp\\": "src/",
+            "Kingbes\\Libui\\SDK\\": "sdk/",
             "LibUI\\Components\\": "src/Components/"
         }
     },
@@ -13,14 +14,6 @@
             "email": "917647288@qq.com"
         }
     ],
-    "scripts": {
-        "post-install-cmd": [
-            "@php scripts/check-libui-dylib.php"
-        ],
-        "post-update-cmd": [
-            "@php scripts/check-libui-dylib.php"
-        ]
-    },
     "require": {
         "kingbes/libui": "*",
         "kingbes/raylib": "^0.0.5"
