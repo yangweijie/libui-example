@@ -7,9 +7,15 @@ class GameState {
     private ?TetrisPiece $currentPiece;
     private ?TetrisPiece $nextPiece;
     private int $score;
+    private int $lines;
+    private int $level;
     private bool $gameOver;
+    private bool $paused;
+    private bool $showPreview;
+    private string $upArrowAction;
     private float $fallSpeed;
     private float $lastFallTime;
+    private array $highScores;
     
     public function __construct() {
         $this->initializeGame();
@@ -26,9 +32,15 @@ class GameState {
         }
         
         $this->score = 0;
+        $this->lines = 0;
+        $this->level = 1;
         $this->gameOver = false;
+        $this->paused = false;
+        $this->showPreview = true;
+        $this->upArrowAction = 'rotate_right'; // Default action for up arrow
         $this->fallSpeed = 0.5; // 500毫秒下落一次
         $this->lastFallTime = microtime(true);
+        $this->highScores = [];
         
         // 生成下一个方块
         $this->nextPiece = new TetrisPiece(rand(1, 7));
@@ -49,6 +61,7 @@ class GameState {
                 $this->currentPiece->getPosition()['x'], 
                 $this->currentPiece->getPosition()['y'])) {
             $this->gameOver = true;
+            $this->saveHighScore();
         }
     }
     
@@ -58,7 +71,7 @@ class GameState {
      * @return bool 移动是否成功
      */
     public function movePiece(string $direction): bool {
-        if ($this->gameOver || $this->currentPiece === null) {
+        if ($this->gameOver || $this->currentPiece === null || $this->paused) {
             return false;
         }
         
@@ -100,7 +113,7 @@ class GameState {
      * @return bool 旋转是否成功
      */
     public function rotatePiece(): bool {
-        if ($this->gameOver || $this->currentPiece === null) {
+        if ($this->gameOver || $this->currentPiece === null || $this->paused) {
             return false;
         }
         
@@ -121,10 +134,35 @@ class GameState {
     }
     
     /**
+     * 向左旋转当前方块
+     * @return bool 旋转是否成功
+     */
+    public function rotatePieceLeft(): bool {
+        if ($this->gameOver || $this->currentPiece === null || $this->paused) {
+            return false;
+        }
+        
+        $newShape = $this->currentPiece->rotateLeft();
+        $pos = $this->currentPiece->getPosition();
+        
+        // 检查旋转后是否发生碰撞
+        if (!$this->currentPiece->checkCollision($this->grid, $pos['x'], $pos['y'], $newShape)) {
+            // 更新方块形状
+            $reflection = new \ReflectionClass($this->currentPiece);
+            $property = $reflection->getProperty('shape');
+            $property->setAccessible(true);
+            $property->setValue($this->currentPiece, $newShape);
+            return true;
+        }
+        
+        return false;
+    }
+    
+    /**
      * 立即下落方块
      */
     public function dropPiece(): void {
-        if ($this->gameOver || $this->currentPiece === null) {
+        if ($this->gameOver || $this->currentPiece === null || $this->paused) {
             return;
         }
         
@@ -216,31 +254,64 @@ class GameState {
      * @param int $linesCleared 清除的行数
      */
     private function updateScore(int $linesCleared): void {
+        // Update lines count
+        $this->lines += $linesCleared;
+        
+        // Update score based on lines cleared
         switch ($linesCleared) {
             case 1:
-                $this->score += 100;
+                $this->score += 100 * $this->level;
                 break;
             case 2:
-                $this->score += 300;
+                $this->score += 300 * $this->level;
                 break;
             case 3:
-                $this->score += 500;
+                $this->score += 500 * $this->level;
                 break;
             case 4:
-                $this->score += 800;
+                $this->score += 800 * $this->level;
                 break;
+        }
+        
+        // Update level every 10 lines
+        $newLevel = intval($this->lines / 10) + 1;
+        if ($newLevel > $this->level) {
+            $this->level = $newLevel;
+            // Increase fall speed with level
+            $this->fallSpeed = max(0.05, 0.5 - ($this->level - 1) * 0.05);
         }
     }
     
     /**
-     * 检查游戏是否结束
-     * @return bool 游戏是否结束
+     * 保存高分记录
      */
-    public function checkGameOver(): bool {
-        return $this->gameOver;
+    private function saveHighScore(): void {
+        $highScore = [
+            'name' => 'Player',
+            'score' => $this->score,
+            'lines' => $this->lines,
+            'level' => $this->level,
+            'date' => date('Y-m-d H:i:s')
+        ];
+        
+        $this->highScores[] = $highScore;
+        
+        // Keep only top 10 scores
+        usort($this->highScores, function($a, $b) {
+            return $b['score'] - $a['score'];
+        });
+        
+        $this->highScores = array_slice($this->highScores, 0, 10);
     }
     
-    // Getter方法
+    /**
+     * 清除高分记录
+     */
+    public function clearHighScores(): void {
+        $this->highScores = [];
+    }
+    
+    // Getter and Setter methods
     public function getGrid(): array {
         return $this->grid;
     }
@@ -257,8 +328,40 @@ class GameState {
         return $this->score;
     }
     
+    public function getLines(): int {
+        return $this->lines;
+    }
+    
+    public function getLevel(): int {
+        return $this->level;
+    }
+    
     public function isGameOver(): bool {
         return $this->gameOver;
+    }
+    
+    public function isPaused(): bool {
+        return $this->paused;
+    }
+    
+    public function setPaused(bool $paused): void {
+        $this->paused = $paused;
+    }
+    
+    public function getShowPreview(): bool {
+        return $this->showPreview;
+    }
+    
+    public function setShowPreview(bool $showPreview): void {
+        $this->showPreview = $showPreview;
+    }
+    
+    public function getUpArrowAction(): string {
+        return $this->upArrowAction;
+    }
+    
+    public function setUpArrowAction(string $action): void {
+        $this->upArrowAction = $action;
     }
     
     public function getFallSpeed(): float {
@@ -271,5 +374,9 @@ class GameState {
     
     public function setLastFallTime(float $time): void {
         $this->lastFallTime = $time;
+    }
+    
+    public function getHighScores(): array {
+        return $this->highScores;
     }
 }

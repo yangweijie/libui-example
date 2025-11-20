@@ -10,6 +10,10 @@ use Kingbes\Libui\DrawLineJoin;
 
 class NextPieceRenderer {
     private const BLOCK_SIZE = 20;
+    private const BEVEL_CONSTANT = 20;
+    
+    // Gray color for grid lines
+    private const COLOR_GRAY = [192/255, 192/255, 192/255, 1.0];
     
     // 颜色定义（与主渲染器相同）
     private const COLORS = [
@@ -90,41 +94,89 @@ class NextPieceRenderer {
         // 获取颜色
         $color = self::COLORS[$colorIndex] ?? self::COLORS[0];
         
-        // 创建方块画笔
-        $blockBrush = Draw::createBrush(DrawBrushType::Solid, $color[0], $color[1], $color[2], $color[3]);
+        // Calculate bevel pixel size for 3D effect
+        $bevelPixelSize = 0.16 * self::BLOCK_SIZE;
         
-        // 绘制方块（留出边框）
-        $blockSize = self::BLOCK_SIZE - 2;
-        $path = Draw::createPath(DrawFillMode::Winding);
-        Draw::pathAddRectangle($path, $x + 1, $y + 1, $blockSize, $blockSize);
-        Draw::pathEnd($path);
-        Draw::fill($params, $path, $blockBrush);
+        // Create main background square
+        $backgroundBrush = Draw::createBrush(DrawBrushType::Solid, $color[0], $color[1], $color[2], $color[3]);
+        $backgroundPath = Draw::createPath(DrawFillMode::Winding);
+        Draw::pathAddRectangle($backgroundPath, $x, $y, self::BLOCK_SIZE, self::BLOCK_SIZE);
+        Draw::pathEnd($backgroundPath);
+        Draw::fill($params, $backgroundPath, $backgroundBrush);
+        Draw::freePath($backgroundPath);
         
-        // 绘制方块边框（使用细长矩形模拟线条，避免Stroke方法导致的崩溃）
-        $borderBrush = Draw::createBrush(DrawBrushType::Solid, 1.0, 1.0, 1.0, 0.2);
+        // Create top bevel
+        $topBevelColor = [
+            min(1.0, $color[0] + 4 * (self::BEVEL_CONSTANT / 255)),
+            min(1.0, $color[1] + 4 * (self::BEVEL_CONSTANT / 255)),
+            min(1.0, $color[2] + 4 * (self::BEVEL_CONSTANT / 255)),
+            $color[3]
+        ];
+        $topBevelBrush = Draw::createBrush(DrawBrushType::Solid, $topBevelColor[0], $topBevelColor[1], $topBevelColor[2], $topBevelColor[3]);
+        $topBevelPath = Draw::createPath(DrawFillMode::Winding);
+        Draw::pathAddRectangle($topBevelPath, $x, $y, self::BLOCK_SIZE - $bevelPixelSize, $bevelPixelSize);
+        Draw::pathEnd($topBevelPath);
+        Draw::fill($params, $topBevelPath, $topBevelBrush);
+        Draw::freePath($topBevelPath);
         
-        // 上边框
-        $topBorder = Draw::createPath(DrawFillMode::Winding);
-        Draw::pathAddRectangle($topBorder, $x + 1, $y + 1, $blockSize, 1);
-        Draw::pathEnd($topBorder);
-        Draw::fill($params, $topBorder, $borderBrush);
+        // Create right bevel
+        $rightBevelColor = [
+            max(0.0, $color[0] - (self::BEVEL_CONSTANT / 255)),
+            max(0.0, $color[1] - (self::BEVEL_CONSTANT / 255)),
+            max(0.0, $color[2] - (self::BEVEL_CONSTANT / 255)),
+            $color[3]
+        ];
+        $rightBevelBrush = Draw::createBrush(DrawBrushType::Solid, $rightBevelColor[0], $rightBevelColor[1], $rightBevelColor[2], $rightBevelColor[3]);
+        $rightBevelPath = Draw::createPath(DrawFillMode::Winding);
+        Draw::pathAddRectangle($rightBevelPath, $x + self::BLOCK_SIZE - $bevelPixelSize, $y, $bevelPixelSize, self::BLOCK_SIZE - $bevelPixelSize);
+        Draw::pathEnd($rightBevelPath);
+        Draw::fill($params, $rightBevelPath, $rightBevelBrush);
+        Draw::freePath($rightBevelPath);
         
-        // 下边框
-        $bottomBorder = Draw::createPath(DrawFillMode::Winding);
-        Draw::pathAddRectangle($bottomBorder, $x + 1, $y + 1 + $blockSize - 1, $blockSize, 1);
-        Draw::pathEnd($bottomBorder);
-        Draw::fill($params, $bottomBorder, $borderBrush);
+        // Create bottom bevel
+        $bottomBevelColor = [
+            max(0.0, $color[0] - (self::BEVEL_CONSTANT / 255)),
+            max(0.0, $color[1] - (self::BEVEL_CONSTANT / 255)),
+            max(0.0, $color[2] - (self::BEVEL_CONSTANT / 255)),
+            $color[3]
+        ];
+        $bottomBevelBrush = Draw::createBrush(DrawBrushType::Solid, $bottomBevelColor[0], $bottomBevelColor[1], $bottomBevelColor[2], $bottomBevelColor[3]);
+        $bottomBevelPath = Draw::createPath(DrawFillMode::Winding);
+        Draw::pathAddRectangle($bottomBevelPath, $x + $bevelPixelSize, $y + self::BLOCK_SIZE - $bevelPixelSize, self::BLOCK_SIZE - $bevelPixelSize, $bevelPixelSize);
+        Draw::pathEnd($bottomBevelPath);
+        Draw::fill($params, $bottomBevelPath, $bottomBevelBrush);
+        Draw::freePath($bottomBevelPath);
         
-        // 左边框
-        $leftBorder = Draw::createPath(DrawFillMode::Winding);
-        Draw::pathAddRectangle($leftBorder, $x + 1, $y + 1, 1, $blockSize);
-        Draw::pathEnd($leftBorder);
-        Draw::fill($params, $leftBorder, $borderBrush);
+        // Create left bevel
+        $leftBevelColor = [
+            max(0.0, $color[0] - (self::BEVEL_CONSTANT / 255)),
+            max(0.0, $color[1] - (self::BEVEL_CONSTANT / 255)),
+            max(0.0, $color[2] - (self::BEVEL_CONSTANT / 255)),
+            $color[3]
+        ];
+        $leftBevelBrush = Draw::createBrush(DrawBrushType::Solid, $leftBevelColor[0], $leftBevelColor[1], $leftBevelColor[2], $leftBevelColor[3]);
+        $leftBevelPath = Draw::createPath(DrawFillMode::Winding);
+        Draw::pathAddRectangle($leftBevelPath, $x, $y + $bevelPixelSize, $bevelPixelSize, self::BLOCK_SIZE - $bevelPixelSize);
+        Draw::pathEnd($leftBevelPath);
+        Draw::fill($params, $leftBevelPath, $leftBevelBrush);
+        Draw::freePath($leftBevelPath);
         
-        // 右边框
-        $rightBorder = Draw::createPath(DrawFillMode::Winding);
-        Draw::pathAddRectangle($rightBorder, $x + 1 + $blockSize - 1, $y + 1, 1, $blockSize);
-        Draw::pathEnd($rightBorder);
-        Draw::fill($params, $rightBorder, $borderBrush);
+        // Create border square
+        $borderColor = $colorIndex == 0 ? self::COLOR_GRAY : $color;
+        $borderBrush = Draw::createBrush(DrawBrushType::Solid, $borderColor[0], $borderColor[1], $borderColor[2], $borderColor[3]);
+        $borderPath = Draw::createPath(DrawFillMode::Winding);
+        Draw::pathAddRectangle($borderPath, $x, $y, self::BLOCK_SIZE, self::BLOCK_SIZE);
+        Draw::pathEnd($borderPath);
+        $strokeParams = Draw::createStrokeParams(
+            \Kingbes\Libui\DrawLineCap::Flat,
+            \Kingbes\Libui\DrawLineJoin::Miter,
+            \Kingbes\Libui\DrawLineJoin::Miter,
+            1.0,   // 线宽
+            10.0,  // miterLimit
+            0,     // numDashes
+            0.0    // DashPhase
+        );
+        Draw::Stroke($params, $borderPath, $borderBrush, $strokeParams);
+        Draw::freePath($borderPath);
     }
 }

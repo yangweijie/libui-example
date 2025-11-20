@@ -51,7 +51,7 @@ class TetrisPiece {
     }
     
     /**
-     * 旋转方块
+     * 旋转方块（向右旋转）
      * @return array 旋转后的新形状
      */
     public function rotate(): array {
@@ -64,6 +64,26 @@ class TetrisPiece {
             $newShape[$i] = array();
             for ($j = 0; $j < $rows; $j++) {
                 $newShape[$i][$j] = $this->shape[$rows - 1 - $j][$i];
+            }
+        }
+        
+        return $newShape;
+    }
+    
+    /**
+     * 向左旋转方块
+     * @return array 旋转后的新形状
+     */
+    public function rotateLeft(): array {
+        $rows = count($this->shape);
+        $cols = count($this->shape[0]);
+        
+        // 创建新的旋转后的形状数组（逆时针旋转90度）
+        $newShape = array();
+        for ($i = 0; $i < $cols; $i++) {
+            $newShape[$i] = array();
+            for ($j = 0; $j < $rows; $j++) {
+                $newShape[$i][$j] = $this->shape[$j][$cols - 1 - $i];
             }
         }
         
